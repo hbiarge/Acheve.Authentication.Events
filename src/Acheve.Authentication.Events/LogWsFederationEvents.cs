@@ -38,7 +38,10 @@ namespace Microsoft.AspNetCore.Authentication.WsFederation
 
         public override Task TicketReceived(TicketReceivedContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: TicketReceived called...", context.Scheme.Name);
+            _logger.TicketReceived(
+                scheme: context.Scheme.Name,
+                returntUri: context.ReturnUri);
+
             return base.TicketReceived(context);
         }
 
@@ -50,7 +53,10 @@ namespace Microsoft.AspNetCore.Authentication.WsFederation
 
         public override Task RemoteFailure(RemoteFailureContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: RemoteFailure called...", context.Scheme.Name);
+            _logger.RemoteFailure(
+                scheme: context.Scheme.Name,
+                failure: context.Failure);
+
             return base.RemoteFailure(context);
         }
 

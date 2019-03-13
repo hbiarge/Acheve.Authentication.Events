@@ -15,25 +15,37 @@ namespace Microsoft.AspNetCore.Authentication.Facebook
 
         public override Task RedirectToAuthorizationEndpoint(RedirectContext<OAuthOptions> context)
         {
-            _logger.LogInformation("Scheme {scheme}: RedirectToAuthorizationEndpoint called...", context.Scheme.Name);
-            return base.RedirectToAuthorizationEndpoint(context);
-        }
+            _logger.RemoteAuthenticationError(
+                scheme: context.Scheme.Name,
+                redirectUri: context.RedirectUri);
 
-        public override Task TicketReceived(TicketReceivedContext context)
-        {
-            _logger.LogInformation("Scheme {scheme}: TicketReceived called...", context.Scheme.Name);
-            return base.TicketReceived(context);
+            return base.RedirectToAuthorizationEndpoint(context);
         }
 
         public override Task CreatingTicket(OAuthCreatingTicketContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: CreatingTicket called...", context.Scheme.Name);
+            _logger.CreatingTicket(
+                 scheme: context.Scheme.Name,
+                 accessToken: context.AccessToken);
+
             return base.CreatingTicket(context);
+        }
+
+        public override Task TicketReceived(TicketReceivedContext context)
+        {
+            _logger.TicketReceived(
+                scheme: context.Scheme.Name,
+                returntUri: context.ReturnUri);
+
+            return base.TicketReceived(context);
         }
 
         public override Task RemoteFailure(RemoteFailureContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: RemoteFailure called...", context.Scheme.Name);
+            _logger.RemoteFailure(
+                scheme: context.Scheme.Name,
+                failure: context.Failure);
+
             return base.RemoteFailure(context);
         }
     }

@@ -1,5 +1,4 @@
-﻿using Acheve.Authentication.Events;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.OAuth
@@ -15,30 +14,37 @@ namespace Microsoft.AspNetCore.Authentication.OAuth
 
         public override Task RedirectToAuthorizationEndpoint(RedirectContext<OAuthOptions> context)
         {
-            _logger.LogInformation(
-                @"Scheme {scheme} - Event {event}: This is a {handlerType}. You are going to be redirected to the Identity provider.
-This is your last chance to customize the redirect url before being redirected.",
-                context.Scheme.Name,
-                nameof(RedirectToAuthorizationEndpoint),
-                Constants.RemoteAuthenticatuionHandler);
+            _logger.RemoteAuthenticationError(
+                scheme: context.Scheme.Name,
+                redirectUri: context.RedirectUri);
+
             return base.RedirectToAuthorizationEndpoint(context);
         }
 
         public override Task CreatingTicket(OAuthCreatingTicketContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: CreatingTicket called...", context.Scheme.Name);
+            _logger.CreatingTicket(
+                 scheme: context.Scheme.Name,
+                 accessToken: context.AccessToken);
+
             return base.CreatingTicket(context);
         }
 
         public override Task TicketReceived(TicketReceivedContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: TicketReceived called...", context.Scheme.Name);
+            _logger.TicketReceived(
+                 scheme: context.Scheme.Name,
+                 returntUri: context.ReturnUri);
+
             return base.TicketReceived(context);
         }
 
         public override Task RemoteFailure(RemoteFailureContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: RemoteFailure called...", context.Scheme.Name);
+            _logger.RemoteFailure(
+                scheme: context.Scheme.Name,
+                failure: context.Failure);
+
             return base.RemoteFailure(context);
         }
     }
