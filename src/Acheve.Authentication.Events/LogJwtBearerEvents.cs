@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.JwtBearer
@@ -14,25 +15,41 @@ namespace Microsoft.AspNetCore.Authentication.JwtBearer
 
         public override Task Challenge(JwtBearerChallengeContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: Challenge called...", context.Scheme.Name);
+            var handler = new StackFrame(1).GetMethod().DeclaringType.Name;
+
+            _logger.Challenge(
+                scheme: context.Scheme.Name,
+                failure: context.AuthenticateFailure?.ToString() ?? "N/A",
+                error: context.Error,
+                errorDescription: context.ErrorDescription);
+
             return base.Challenge(context);
         }
 
         public override Task MessageReceived(MessageReceivedContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: MessageReceived called...", context.Scheme.Name);
+            _logger.MessageReceived(
+               scheme: context.Scheme.Name);
+
             return base.MessageReceived(context);
         }
 
         public override Task TokenValidated(TokenValidatedContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: TokenValidated called...", context.Scheme.Name);
+            _logger.TokenValidated(
+               scheme: context.Scheme.Name,
+               user: context.Principal.Identity.Name,
+               token: context.SecurityToken.Id);
+
             return base.TokenValidated(context);
         }
 
         public override Task AuthenticationFailed(AuthenticationFailedContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: AuthenticationFailed called...", context.Scheme.Name);
+            _logger.AuthenticationFailed(
+               scheme: context.Scheme.Name,
+               exception: context.Exception?.ToString() ?? "N/A");
+
             return base.AuthenticationFailed(context);
         }
     }
