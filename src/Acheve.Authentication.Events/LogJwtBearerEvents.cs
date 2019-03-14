@@ -19,7 +19,7 @@ namespace Microsoft.AspNetCore.Authentication.JwtBearer
 
             _logger.Challenge(
                 scheme: context.Scheme.Name,
-                failure: context.AuthenticateFailure?.ToString() ?? "N/A",
+                failure: context.AuthenticateFailure,
                 error: context.Error,
                 errorDescription: context.ErrorDescription);
 
@@ -38,7 +38,7 @@ namespace Microsoft.AspNetCore.Authentication.JwtBearer
         {
             _logger.TokenValidated(
                scheme: context.Scheme.Name,
-               user: context.Principal.Identity.Name,
+               principal: context.Principal,
                token: context.SecurityToken.Id);
 
             return base.TokenValidated(context);
@@ -48,7 +48,7 @@ namespace Microsoft.AspNetCore.Authentication.JwtBearer
         {
             _logger.AuthenticationFailed(
                scheme: context.Scheme.Name,
-               exception: context.Exception?.ToString() ?? "N/A");
+               exception: context.Exception);
 
             return base.AuthenticationFailed(context);
         }

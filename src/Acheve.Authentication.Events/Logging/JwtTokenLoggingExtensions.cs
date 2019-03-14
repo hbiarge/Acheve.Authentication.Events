@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Acheve.Authentication.Events;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Security.Claims;
 
 namespace Microsoft.AspNetCore.Authentication
 {
@@ -44,9 +46,12 @@ Get the token from a different location or adjust or reject the token based on c
 Description:
 The token has been validated by, at least, one security token validator and a ClaimsPrincipal has been created.
 If an AuthenticationResult is generated in the TokenValidatedContext it is honored by the handler.
+Information:
+User: {user}
+Token: {token}
 Useful for:
 Add custom claims to the generated ClaimsPrincipal or replace it.");
-            _tokenValidated = LoggerMessage.Define<string, string, string, string>(
+            _authenticationFailed = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(101, "AuthenticationFailed"),
                 logLevel: LogLevel.Information,
                 formatString: @"Scheme {scheme} - Event {event}
@@ -54,17 +59,19 @@ Description:
 Any security token validator has validated the token but at least one of them has generated a validation failure exception.
 In this event you can inspect the validation failure exceptions and decide if the request should be authenticated or not.
 If an AuthenticationResult is generated in the AuthenticationFailedContext it is honored by the handler.
+Information:
+Exception: {exception}
 Useful for:
 Add custom logic to handle an authentication failure. For example, manage the renew of public keys of the authority identity provider (can be done automatically through the RefreshOnIssuerKeyNotFound property).");
         }
 
-        public static void Challenge(this ILogger logger, string scheme, string failure, string error, string errorDescription)
+        public static void Challenge(this ILogger logger, string scheme, Exception failure, string error, string errorDescription)
         {
             _challenge(
                 logger,
                 scheme,
                 nameof(Challenge),
-                failure,
+                failure?.ToString() ?? "N/A",
                 error,
                 errorDescription,
                 null);
@@ -79,24 +86,24 @@ Add custom logic to handle an authentication failure. For example, manage the re
                 null);
         }
 
-        public static void TokenValidated(this ILogger logger, string scheme, string user, string token)
+        public static void TokenValidated(this ILogger logger, string scheme, ClaimsPrincipal principal, string token)
         {
             _tokenValidated(
                 logger,
                 scheme,
                 nameof(TokenValidated),
-                user,
+                principal.ToFormattedLog(),
                 token,
                 null);
         }
 
-        public static void AuthenticationFailed(this ILogger logger, string scheme, string exception)
+        public static void AuthenticationFailed(this ILogger logger, string scheme, Exception exception)
         {
             _authenticationFailed(
                 logger,
                 scheme,
                 nameof(AuthenticationFailed),
-                exception,
+                exception?.ToString() ?? "N/A",
                 null);
         }
     }

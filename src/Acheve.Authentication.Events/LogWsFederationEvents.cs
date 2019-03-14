@@ -40,6 +40,7 @@ namespace Microsoft.AspNetCore.Authentication.WsFederation
         {
             _logger.TicketReceived(
                 scheme: context.Scheme.Name,
+                principal: context.Principal,
                 returntUri: context.ReturnUri);
 
             return base.TicketReceived(context);

@@ -15,7 +15,7 @@ namespace Microsoft.AspNetCore.Authentication.MicrosoftAccount
 
         public override Task RedirectToAuthorizationEndpoint(RedirectContext<OAuthOptions> context)
         {
-            _logger.RemoteAuthenticationError(
+            _logger.RedirectToAuthorizationEndpoint(
                 scheme: context.Scheme.Name,
                 redirectUri: context.RedirectUri);
 
@@ -35,11 +35,12 @@ namespace Microsoft.AspNetCore.Authentication.MicrosoftAccount
         {
             _logger.TicketReceived(
                 scheme: context.Scheme.Name,
+                principal: context.Principal,
                 returntUri: context.ReturnUri);
 
             return base.TicketReceived(context);
         }
-        
+
         public override Task RemoteFailure(RemoteFailureContext context)
         {
             _logger.RemoteFailure(

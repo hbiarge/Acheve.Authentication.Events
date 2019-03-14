@@ -14,7 +14,7 @@ namespace Microsoft.AspNetCore.Authentication.Twitter
 
         public override Task RedirectToAuthorizationEndpoint(RedirectContext<TwitterOptions> context)
         {
-            _logger.RemoteAuthenticationError(
+            _logger.RedirectToAuthorizationEndpoint(
                 scheme: context.Scheme.Name,
                 redirectUri: context.RedirectUri);
 
@@ -34,6 +34,7 @@ namespace Microsoft.AspNetCore.Authentication.Twitter
         {
             _logger.TicketReceived(
                 scheme: context.Scheme.Name,
+                principal: context.Principal,
                 returntUri: context.ReturnUri);
 
             return base.TicketReceived(context);

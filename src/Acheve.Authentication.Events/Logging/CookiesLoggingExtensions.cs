@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Acheve.Authentication.Events;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Security.Claims;
 
 namespace Microsoft.AspNetCore.Authentication
 {
@@ -9,8 +11,8 @@ namespace Microsoft.AspNetCore.Authentication
     internal static class CookiesLoggingExtensions
     {
         private static readonly Action<ILogger, string, string, string, Exception> _validatePrincipal;
-        private static readonly Action<ILogger, string, string, Exception> _signingIn;
-        private static readonly Action<ILogger, string, string, Exception> _signedIn;
+        private static readonly Action<ILogger, string, string, string, Exception> _signingIn;
+        private static readonly Action<ILogger, string, string, string, Exception> _signedIn;
         private static readonly Action<ILogger, string, string, Exception> _signingOut;
         private static readonly Action<ILogger, string, string, string, Exception> _redirectToLogin;
         private static readonly Action<ILogger, string, string, string, Exception> _redirectToReturnUrl;
@@ -29,10 +31,10 @@ You can replace the principal with a new one or reject the principal based on cu
 You can also force the renewal of the cookie setting context.ShouldRenew to true.
 This method is called in every request.
 Relevant information:
-User: {user}
+Principal: {principal}
 Useful for:
 Perform custom logic in the incoming ClaimsPrincipal or force the cookie renewal.");
-            _signingIn = LoggerMessage.Define<string, string>(
+            _signingIn = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(201, "SigningIn"),
                 logLevel: LogLevel.Information,
                 formatString: @"Scheme {scheme} - Event {event}
@@ -40,9 +42,11 @@ Description:
 The handler is configuring the settings to send the cookie to the client.
 You can customize the cookie settings in this event.
 This method is called once per SigIn process in the scheme.
+Relevant information:
+Principal: {principal}
 Useful for:
 Customize the cookie options.");
-            _signedIn = LoggerMessage.Define<string, string>(
+            _signedIn = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(202, "SignedIn"),
                 logLevel: LogLevel.Information,
                 formatString: @"Scheme {scheme} - Event {event}
@@ -50,6 +54,8 @@ Description:
 The authentication cookie has been generated and appended to the response.
 You can customize the cookie settings in this event.
 This method is called once when there is a SigIn in this scheme.
+Relevant information:
+Principal: {principal}
 Useful for:
 Track sigins?.");
             _signingOut = LoggerMessage.Define<string, string>(
@@ -95,34 +101,38 @@ RedirectUri: {redirectUri}");
                 logLevel: LogLevel.Information,
                 formatString: @"Scheme {scheme} - Event {event}
 Description:
-Aparently this event is not called anymore in the handler.");
+Aparently this event is not called anymore in the handler.
+Information:
+RedirectUri: {redirectUri}");
         }
 
-        public static void ValidatePrincipal(this ILogger logger, string scheme, string user)
+        public static void ValidatePrincipal(this ILogger logger, string scheme, ClaimsPrincipal principal)
         {
             _validatePrincipal(
                 logger,
                 scheme,
                 nameof(ValidatePrincipal),
-                user,
+                principal.ToFormattedLog(),
                 null);
         }
 
-        public static void SigningIn(this ILogger logger, string scheme)
+        public static void SigningIn(this ILogger logger, string scheme, ClaimsPrincipal principal)
         {
             _signingIn(
                 logger,
                 scheme,
                 nameof(SigningIn),
+                principal.ToFormattedLog(),
                 null);
         }
 
-        public static void SignedIn(this ILogger logger, string scheme)
+        public static void SignedIn(this ILogger logger, string scheme, ClaimsPrincipal principal)
         {
             _signedIn(
                 logger,
                 scheme,
                 nameof(SignedIn),
+                principal.ToFormattedLog(),
                 null);
         }
 

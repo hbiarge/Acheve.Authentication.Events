@@ -16,7 +16,7 @@ namespace Microsoft.AspNetCore.Authentication.Cookies
         {
             _logger.ValidatePrincipal(
                 scheme: context.Scheme.Name,
-                user: context.Principal.Identity.Name);
+                principal: context.Principal);
 
             return base.ValidatePrincipal(context);
         }
@@ -24,7 +24,8 @@ namespace Microsoft.AspNetCore.Authentication.Cookies
         public override Task SigningIn(CookieSigningInContext context)
         {
             _logger.SigningIn(
-                scheme: context.Scheme.Name);
+                scheme: context.Scheme.Name,
+                principal: context.Principal);
 
             return base.SigningIn(context);
         }
@@ -32,7 +33,8 @@ namespace Microsoft.AspNetCore.Authentication.Cookies
         public override Task SignedIn(CookieSignedInContext context)
         {
             _logger.SignedIn(
-                 scheme: context.Scheme.Name);
+                 scheme: context.Scheme.Name,
+                 principal: context.Principal);
 
             return base.SignedIn(context);
         }
