@@ -1,9 +1,8 @@
-﻿using Acheve.Authentication.Events;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
 
-namespace Microsoft.AspNetCore.Authentication
+namespace Acheve.Authentication.Events.Remote.OAuth
 {
     /// <summary>
     ///    OAuth (OAuth, Twitter, Google, Facebook and MicrosoftAccount)
@@ -12,8 +11,6 @@ namespace Microsoft.AspNetCore.Authentication
     {
         private static readonly Action<ILogger, string, string, string, Exception> _redirectToAuthorizationEndpoint;
         private static readonly Action<ILogger, string, string, string, string, Exception> _creatingTicket;
-        private static readonly Action<ILogger, string, string, string, string, Exception> _ticketReceived;
-        private static readonly Action<ILogger, string, string, string, Exception> _remoteFailure;
 
         static OAuthLoggingExtensions()
         {
@@ -39,27 +36,6 @@ AccessToken: {accessToken}
 Principal: {principal}
 Useful for:
 You can add some custom information to the ClaimsPrincipal or implement additional verification code to decide if the user is authenticated or not.");
-            _ticketReceived = LoggerMessage.Define<string, string, string, string>(
-                eventId: new EventId(3, "TicketReceived"),
-                logLevel: LogLevel.Information,
-                formatString: @"Scheme {scheme} - Event {event}
-Description:
-This event is raised before SignIn the current ticket and redirect to the original requested uri in the site.
-Information:
-Principal: {principal}
-ReturnUri: {returntUri}
-Useful for:
-Change the return uri or handle or skip the signin.");
-            _remoteFailure = LoggerMessage.Define<string, string, string>(
-                eventId: new EventId(4, "RemoteFailure"),
-                logLevel: LogLevel.Information,
-                formatString: @"Scheme {scheme} - Event {event}
-Description:
-This event is raised before SignIn the current ticket and redirect to the original requested uri in the site.
-Information:
-failure: {failure}
-Useful for:
-Change the return uri or handle or skip the signin.");
         }
 
         public static void RedirectToAuthorizationEndpoint(this ILogger logger, string scheme, string redirectUri)
@@ -80,27 +56,6 @@ Change the return uri or handle or skip the signin.");
                 nameof(CreatingTicket),
                 accessToken,
                 principal.ToFormattedLog(),
-                null);
-        }
-
-        public static void TicketReceived(this ILogger logger, string scheme, ClaimsPrincipal principal, string returntUri)
-        {
-            _ticketReceived(
-                logger,
-                scheme,
-                nameof(TicketReceived),
-                principal.ToFormattedLog(),
-                returntUri,
-                null);
-        }
-
-        public static void RemoteFailure(this ILogger logger, string scheme, Exception failure)
-        {
-            _remoteFailure(
-                logger,
-                scheme,
-                nameof(RemoteFailure),
-                failure.ToString(),
                 null);
         }
     }

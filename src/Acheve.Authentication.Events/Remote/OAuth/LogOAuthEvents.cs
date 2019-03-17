@@ -1,14 +1,24 @@
-﻿using Microsoft.AspNetCore.Authentication.OAuth;
+﻿using Acheve.Authentication.Events.Remote;
+using Acheve.Authentication.Events.Remote.OAuth;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.Google
+namespace Microsoft.AspNetCore.Authentication.OAuth
 {
-    public class LogGoogleEvents : OAuthEvents
+    public class OAuthOptionsConfiguration : IPostConfigureOptions<OAuthOptions>
     {
-        private readonly ILogger<LogGoogleEvents> _logger;
+        public void PostConfigure(string name, OAuthOptions options)
+        {
+            options.EventsType = typeof(LogOAuthEvents);
+        }
+    }
 
-        public LogGoogleEvents(ILogger<LogGoogleEvents> logger)
+    public class LogOAuthEvents : OAuthEvents
+    {
+        private readonly ILogger<LogOAuthEvents> _logger;
+
+        public LogOAuthEvents(ILogger<LogOAuthEvents> logger)
         {
             _logger = logger;
         }
@@ -26,7 +36,8 @@ namespace Microsoft.AspNetCore.Authentication.Google
         {
             _logger.CreatingTicket(
                  scheme: context.Scheme.Name,
-                 accessToken: context.AccessToken);
+                 accessToken: context.AccessToken,
+                 principal: context.Principal);
 
             return base.CreatingTicket(context);
         }
@@ -34,9 +45,9 @@ namespace Microsoft.AspNetCore.Authentication.Google
         public override Task TicketReceived(TicketReceivedContext context)
         {
             _logger.TicketReceived(
-                scheme: context.Scheme.Name,
-                principal: context.Principal,
-                returntUri: context.ReturnUri);
+                 scheme: context.Scheme.Name,
+                 principal: context.Principal,
+                 returntUri: context.ReturnUri);
 
             return base.TicketReceived(context);
         }

@@ -1,9 +1,20 @@
-﻿using Microsoft.AspNetCore.Authentication.OAuth;
+﻿using Acheve.Authentication.Events.Remote;
+using Acheve.Authentication.Events.Remote.OAuth;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.MicrosoftAccount
 {
+    public class MicrosoftAccountOptionsConfiguration : IPostConfigureOptions<MicrosoftAccountOptions>
+    {
+        public void PostConfigure(string name, MicrosoftAccountOptions options)
+        {
+            options.EventsType = typeof(LogMicrosoftAccountEvents);
+        }
+    }
+
     public class LogMicrosoftAccountEvents : OAuthEvents
     {
         private readonly ILogger<LogMicrosoftAccountEvents> _logger;
@@ -26,7 +37,8 @@ namespace Microsoft.AspNetCore.Authentication.MicrosoftAccount
         {
             _logger.CreatingTicket(
                  scheme: context.Scheme.Name,
-                 accessToken: context.AccessToken);
+                 accessToken: context.AccessToken,
+                 principal: context.Principal);
 
             return base.CreatingTicket(context);
         }

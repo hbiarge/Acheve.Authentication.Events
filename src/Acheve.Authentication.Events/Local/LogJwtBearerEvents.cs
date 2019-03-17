@@ -1,9 +1,19 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Acheve.Authentication.Events.Local;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.JwtBearer
 {
+    public class JwtBearerOptionsConfiguration : IPostConfigureOptions<JwtBearerOptions>
+    {
+        public void PostConfigure(string name, JwtBearerOptions options)
+        {
+            options.EventsType = typeof(LogJwtBearerEvents);
+        }
+    }
+
     public class LogJwtBearerEvents : JwtBearerEvents
     {
         private readonly ILogger<LogJwtBearerEvents> _logger;

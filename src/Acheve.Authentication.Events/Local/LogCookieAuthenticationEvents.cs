@@ -1,8 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Acheve.Authentication.Events.Local;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.Cookies
 {
+    public class CookieAuthenticationOptionsConfiguration : IPostConfigureOptions<CookieAuthenticationOptions>
+    {
+        public void PostConfigure(string name, CookieAuthenticationOptions options)
+        {
+            options.EventsType = typeof(LogCookieAuthenticationEvents);
+        }
+    }
+
     public class LogCookieAuthenticationEvents : CookieAuthenticationEvents
     {
         private readonly ILogger<LogCookieAuthenticationEvents> _logger;

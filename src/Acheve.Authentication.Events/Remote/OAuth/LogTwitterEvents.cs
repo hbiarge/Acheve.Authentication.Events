@@ -1,19 +1,29 @@
-﻿using Microsoft.AspNetCore.Authentication.OAuth;
+﻿using Acheve.Authentication.Events.Remote;
+using Acheve.Authentication.Events.Remote.OAuth;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.Facebook
+namespace Microsoft.AspNetCore.Authentication.Twitter
 {
-    public class LogFacebookEvents : OAuthEvents
+    public class TwitterOptionsConfiguration : IPostConfigureOptions<TwitterOptions>
     {
-        private readonly ILogger<LogFacebookEvents> _logger;
+        public void PostConfigure(string name, TwitterOptions options)
+        {
+            options.EventsType = typeof(LogTwitterEvents);
+        }
+    }
 
-        public LogFacebookEvents(ILogger<LogFacebookEvents> logger)
+    public class LogTwitterEvents : TwitterEvents
+    {
+        private readonly ILogger<LogTwitterEvents> _logger;
+
+        public LogTwitterEvents(ILogger<LogTwitterEvents> logger)
         {
             _logger = logger;
         }
 
-        public override Task RedirectToAuthorizationEndpoint(RedirectContext<OAuthOptions> context)
+        public override Task RedirectToAuthorizationEndpoint(RedirectContext<TwitterOptions> context)
         {
             _logger.RedirectToAuthorizationEndpoint(
                 scheme: context.Scheme.Name,
@@ -22,11 +32,12 @@ namespace Microsoft.AspNetCore.Authentication.Facebook
             return base.RedirectToAuthorizationEndpoint(context);
         }
 
-        public override Task CreatingTicket(OAuthCreatingTicketContext context)
+        public override Task CreatingTicket(TwitterCreatingTicketContext context)
         {
             _logger.CreatingTicket(
-                 scheme: context.Scheme.Name,
-                 accessToken: context.AccessToken);
+                scheme: context.Scheme.Name,
+                accessToken: context.AccessToken,
+                principal: context.Principal);
 
             return base.CreatingTicket(context);
         }

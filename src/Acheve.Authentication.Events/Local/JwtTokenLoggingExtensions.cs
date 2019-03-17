@@ -1,9 +1,8 @@
-﻿using Acheve.Authentication.Events;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
 
-namespace Microsoft.AspNetCore.Authentication
+namespace Acheve.Authentication.Events.Local
 {
     /// <summary>
     ///     JwtBearer
@@ -22,13 +21,13 @@ namespace Microsoft.AspNetCore.Authentication
                 logLevel: LogLevel.Information,
                 formatString: @"Scheme {scheme} - Event {event}
 Description:
-This event is raised before send a response with a 401 status code to the client. There is no token or the token has expired or, may be, an unexpected exception.
+This event is raised before sending a response with a 401 status code to the client. There is no token or the token has expired or, may be, an unexpected exception has happened.
 Relevant information:
 AuthenticationFailure: {failure}
 Error: {error}
 ErrorDescription: {errorDescription}
 Useful for:
-Customize the 401 response.");
+Customize the 401 response. Call context.HandleResponse() to signal the handler that you are sending the response in this event to stop further proccesing.");
             _messageReceived = LoggerMessage.Define<string, string>(
                 eventId: new EventId(101, "MessageReceived"),
                 logLevel: LogLevel.Information,
@@ -36,21 +35,25 @@ Customize the 401 response.");
 Description:
 A request that must be authenticated has been received.
 By default the handler finds the token in the Authentication header. You have the oportunity to find the token in other place and set it in the context.
+You can also bypass all the handler processing and write custom logig to authenticate the request.
 If an AuthenticationResult is generated in the MessageReceivedContext it is honored by the handler.
 Useful for:
-Get the token from a different location or adjust or reject the token based on custom logic or bypass the handler logic generating an AuthenticationResult.");
+Get the token from a different location or adjust or reject the token based on custom logic: get the token and set the context.Token property.
+Bypass the handler logic generating an AuthenticationResult: call context.Success(), context.Fail() or context.NoResult() based on your custom logic.");
             _tokenValidated = LoggerMessage.Define<string, string, string, string>(
                 eventId: new EventId(101, "TokenValidated"),
                 logLevel: LogLevel.Information,
                 formatString: @"Scheme {scheme} - Event {event}
 Description:
 The token has been validated by, at least, one security token validator and a ClaimsPrincipal has been created.
+You can also bypass all the handler processing and write custom logig to authenticate the request.
 If an AuthenticationResult is generated in the TokenValidatedContext it is honored by the handler.
 Information:
 User: {user}
 Token: {token}
 Useful for:
-Add custom claims to the generated ClaimsPrincipal or replace it.");
+Add custom claims to the generated ClaimsPrincipal or replace it: use context.Principal.
+Bypass the handler logic generating an AuthenticationResult: call context.Success(), context.Fail() or context.NoResult() based on your custom logic.");
             _authenticationFailed = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(101, "AuthenticationFailed"),
                 logLevel: LogLevel.Information,

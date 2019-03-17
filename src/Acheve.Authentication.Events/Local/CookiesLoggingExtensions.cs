@@ -1,9 +1,8 @@
-﻿using Acheve.Authentication.Events;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
 
-namespace Microsoft.AspNetCore.Authentication
+namespace Acheve.Authentication.Events.Local
 {
     /// <summary>
     ///     Cookies

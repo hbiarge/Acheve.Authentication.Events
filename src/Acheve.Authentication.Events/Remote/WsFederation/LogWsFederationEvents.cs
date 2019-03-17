@@ -1,8 +1,19 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Acheve.Authentication.Events.Remote;
+using Acheve.Authentication.Events.Remote.WsFederation;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.WsFederation
 {
+    public class WsFederationOptionsConfiguration : IPostConfigureOptions<WsFederationOptions>
+    {
+        public void PostConfigure(string name, WsFederationOptions options)
+        {
+            options.EventsType = typeof(LogWsFederationEvents);
+        }
+    }
+
     public class LogWsFederationEvents : WsFederationEvents
     {
         private readonly ILogger<LogWsFederationEvents> _logger;
@@ -14,25 +25,39 @@ namespace Microsoft.AspNetCore.Authentication.WsFederation
 
         public override Task RedirectToIdentityProvider(RedirectContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: RedirectToIdentityProvider called...", context.Scheme.Name);
+            _logger.RedirectToIdentityProvider(
+                scheme: context.Scheme.Name,
+                protocolMessage: context.ProtocolMessage);
+
             return base.RedirectToIdentityProvider(context);
         }
 
         public override Task MessageReceived(MessageReceivedContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: MessageReceived called...", context.Scheme.Name);
+            _logger.MessageReceived(
+                scheme: context.Scheme.Name,
+                protocolMessage: context.ProtocolMessage);
+
             return base.MessageReceived(context);
         }
 
         public override Task SecurityTokenReceived(SecurityTokenReceivedContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: SecurityTokenReceived called...", context.Scheme.Name);
+            _logger.SecurityTokenReceived(
+                scheme: context.Scheme.Name,
+                protocolMessage: context.ProtocolMessage,
+                principal: context.Principal);
+
             return base.SecurityTokenReceived(context);
         }
 
         public override Task SecurityTokenValidated(SecurityTokenValidatedContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: SecurityTokenValidated called...", context.Scheme.Name);
+            _logger.SecurityTokenValidated(
+                scheme: context.Scheme.Name,
+                protocolMessage: context.ProtocolMessage,
+                principal: context.Principal);
+
             return base.SecurityTokenValidated(context);
         }
 
@@ -48,7 +73,10 @@ namespace Microsoft.AspNetCore.Authentication.WsFederation
 
         public override Task RemoteSignOut(RemoteSignOutContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: RemoteSignOut called...", context.Scheme.Name);
+            _logger.RemoteSignOut(
+                scheme: context.Scheme.Name,
+                protocolMessage: context.ProtocolMessage);
+
             return base.RemoteSignOut(context);
         }
 
@@ -63,7 +91,10 @@ namespace Microsoft.AspNetCore.Authentication.WsFederation
 
         public override Task AuthenticationFailed(AuthenticationFailedContext context)
         {
-            _logger.LogInformation("Scheme {scheme}: AuthenticationFailed called...", context.Scheme.Name);
+            _logger.AuthenticationFailed(
+                scheme: context.Scheme.Name,
+                exception: context.Exception);
+
             return base.AuthenticationFailed(context);
         }
     }

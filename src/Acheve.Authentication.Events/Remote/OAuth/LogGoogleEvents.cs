@@ -1,18 +1,30 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Acheve.Authentication.Events.Remote;
+using Acheve.Authentication.Events.Remote.OAuth;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.Twitter
+namespace Microsoft.AspNetCore.Authentication.Google
 {
-    public class LogTwitterEvents : TwitterEvents
+    public class GoogleOptionsConfiguration : IPostConfigureOptions<GoogleOptions>
     {
-        private readonly ILogger<LogTwitterEvents> _logger;
+        public void PostConfigure(string name, GoogleOptions options)
+        {
+            options.EventsType = typeof(LogGoogleEvents);
+        }
+    }
 
-        public LogTwitterEvents(ILogger<LogTwitterEvents> logger)
+    public class LogGoogleEvents : OAuthEvents
+    {
+        private readonly ILogger<LogGoogleEvents> _logger;
+
+        public LogGoogleEvents(ILogger<LogGoogleEvents> logger)
         {
             _logger = logger;
         }
 
-        public override Task RedirectToAuthorizationEndpoint(RedirectContext<TwitterOptions> context)
+        public override Task RedirectToAuthorizationEndpoint(RedirectContext<OAuthOptions> context)
         {
             _logger.RedirectToAuthorizationEndpoint(
                 scheme: context.Scheme.Name,
@@ -21,11 +33,12 @@ namespace Microsoft.AspNetCore.Authentication.Twitter
             return base.RedirectToAuthorizationEndpoint(context);
         }
 
-        public override Task CreatingTicket(TwitterCreatingTicketContext context)
+        public override Task CreatingTicket(OAuthCreatingTicketContext context)
         {
             _logger.CreatingTicket(
-                scheme: context.Scheme.Name,
-                accessToken: context.AccessToken);
+                 scheme: context.Scheme.Name,
+                 accessToken: context.AccessToken,
+                 principal: context.Principal);
 
             return base.CreatingTicket(context);
         }
