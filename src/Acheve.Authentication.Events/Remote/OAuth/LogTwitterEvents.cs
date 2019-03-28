@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.Twitter
 {
-    public class TwitterOptionsConfiguration : IPostConfigureOptions<TwitterOptions>
+    public class EventsTypeTwitterPostConfigureOptions : IPostConfigureOptions<TwitterOptions>
     {
         public void PostConfigure(string name, TwitterOptions options)
         {

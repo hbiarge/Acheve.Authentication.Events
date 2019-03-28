@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.JwtBearer
 {
-    public class JwtBearerOptionsConfiguration : IPostConfigureOptions<JwtBearerOptions>
+    public class EventsTypeJwtBearerPostConfigureOptions : IPostConfigureOptions<JwtBearerOptions>
     {
         public void PostConfigure(string name, JwtBearerOptions options)
         {

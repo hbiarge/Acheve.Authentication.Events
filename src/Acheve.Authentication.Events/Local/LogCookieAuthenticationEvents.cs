@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.Cookies
 {
-    public class CookieAuthenticationOptionsConfiguration : IPostConfigureOptions<CookieAuthenticationOptions>
+    public class EventsTypeCookieAuthenticationPostConfigureOptions : IPostConfigureOptions<CookieAuthenticationOptions>
     {
         public void PostConfigure(string name, CookieAuthenticationOptions options)
         {

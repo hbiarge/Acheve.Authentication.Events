@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,25 +16,25 @@ namespace Microsoft.AspNetCore.Authentication
         public static AuthenticationBuilder UseLogEvents(this AuthenticationBuilder builder)
         {
             builder.Services.AddTransient<LogCookieAuthenticationEvents>();
-            builder.Services.AddSingleton<CookieAuthenticationOptionsConfiguration>();
+            builder.Services.AddSingleton<EventsTypeCookieAuthenticationPostConfigureOptions>();
             builder.Services.AddTransient<LogJwtBearerEvents>();
-            builder.Services.AddSingleton<JwtBearerOptionsConfiguration>();
+            builder.Services.AddSingleton<EventsTypeJwtBearerPostConfigureOptions>();
 
             builder.Services.AddTransient<LogOAuthEvents>();
-            builder.Services.AddSingleton<OAuthOptionsConfiguration>();
+            builder.Services.AddSingleton<EventsTypeOAuthPostConfigureOptions>();
             builder.Services.AddTransient<LogFacebookEvents>();
-            builder.Services.AddSingleton<FacebookOptionsConfiguration>();
+            builder.Services.AddSingleton<EventsTypeFacebookPostConfigureOptions>();
             builder.Services.AddTransient<LogGoogleEvents>();
-            builder.Services.AddSingleton<GoogleOptionsConfiguration>();
+            builder.Services.AddSingleton<EventsTypeGooglePostConfigureOptions>();
             builder.Services.AddTransient<LogMicrosoftAccountEvents>();
-            builder.Services.AddSingleton<MicrosoftAccountOptionsConfiguration>();
+            builder.Services.AddSingleton<EventsTypeMicrosoftAccountPostConfigureOptions>();
             builder.Services.AddTransient<LogTwitterEvents>();
-            builder.Services.AddSingleton<TwitterOptionsConfiguration>();
+            builder.Services.AddSingleton<EventsTypeTwitterPostConfigureOptions>();
 
             builder.Services.AddTransient<LogOpenIdConnectEvents>();
-            builder.Services.AddSingleton<OpenIdConnectOptionsConfiguration>();
+            builder.Services.AddSingleton<EventsTypeOpenIdConnectPostConfigureOptions>();
             builder.Services.AddTransient<LogWsFederationEvents>();
-            builder.Services.AddSingleton<WsFederationOptionsConfiguration>();
+            builder.Services.AddSingleton<EventsTypeWsFederationPostConfigureOptions>();
 
             return builder;
         }

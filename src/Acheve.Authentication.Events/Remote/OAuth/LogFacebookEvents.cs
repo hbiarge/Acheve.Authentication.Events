@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.Facebook
 {
-    public class FacebookOptionsConfiguration : IPostConfigureOptions<FacebookOptions>
+    public class EventsTypeFacebookPostConfigureOptions : IPostConfigureOptions<FacebookOptions>
     {
         public void PostConfigure(string name, FacebookOptions options)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.WsFederation
 {
-    public class WsFederationOptionsConfiguration : IPostConfigureOptions<WsFederationOptions>
+    public class EventsTypeWsFederationPostConfigureOptions : IPostConfigureOptions<WsFederationOptions>
     {
         public void PostConfigure(string name, WsFederationOptions options)
         {

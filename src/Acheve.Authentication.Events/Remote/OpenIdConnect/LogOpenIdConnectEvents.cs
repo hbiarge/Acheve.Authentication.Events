@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.OpenIdConnect
 {
-    public class OpenIdConnectOptionsConfiguration : IPostConfigureOptions<OpenIdConnectOptions>
+    public class EventsTypeOpenIdConnectPostConfigureOptions : IPostConfigureOptions<OpenIdConnectOptions>
     {
         public void PostConfigure(string name, OpenIdConnectOptions options)
         {

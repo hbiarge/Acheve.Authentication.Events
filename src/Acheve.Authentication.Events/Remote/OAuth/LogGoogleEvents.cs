@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.Google
 {
-    public class GoogleOptionsConfiguration : IPostConfigureOptions<GoogleOptions>
+    public class EventsTypeGooglePostConfigureOptions : IPostConfigureOptions<GoogleOptions>
     {
         public void PostConfigure(string name, GoogleOptions options)
         {

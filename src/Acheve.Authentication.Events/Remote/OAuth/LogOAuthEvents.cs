@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.OAuth
 {
-    public class OAuthOptionsConfiguration : IPostConfigureOptions<OAuthOptions>
+    public class EventsTypeOAuthPostConfigureOptions : IPostConfigureOptions<OAuthOptions>
     {
         public void PostConfigure(string name, OAuthOptions options)
         {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Authentication.MicrosoftAccount
 {
-    public class MicrosoftAccountOptionsConfiguration : IPostConfigureOptions<MicrosoftAccountOptions>
+    public class EventsTypeMicrosoftAccountPostConfigureOptions : IPostConfigureOptions<MicrosoftAccountOptions>
     {
         public void PostConfigure(string name, MicrosoftAccountOptions options)
         {
