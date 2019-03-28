@@ -20,17 +20,18 @@ namespace Acheve.Authentication.Events.Remote.OAuth
                 formatString: @"Scheme {scheme} - Event {event}
 Description:
 This is a Remote Authentication Handler. You are going to be redirected to the Identity provider.
-Information:
+Relevant information:
 RedirectUri: {redirectUri}
 Useful for:
 This is your last chance to customize the redirect url before being redirected.");
+            
             _creatingTicket = LoggerMessage.Define<string, string, string, string>(
                 eventId: new EventId(2, "CreatingTicket"),
                 logLevel: LogLevel.Information,
                 formatString: @"Scheme {scheme} - Event {event}
 Description:
 The identity provider has authenticated the user, redirected to the application and the handler has created the ClaimsPrincipal.
-Information:
+Relevant information:
 You can review the principal created and the information the identity provider has sent.
 AccessToken: {accessToken}
 Principal: {principal}

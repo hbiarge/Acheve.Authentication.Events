@@ -20,18 +20,19 @@ namespace Acheve.Authentication.Events.Remote
                 formatString: @"Scheme {scheme} - Event {event}
 Description:
 This event is raised before SignIn the current ticket and redirect to the original requested uri in the site.
-Information:
+Relevant information:
 Principal: {principal}
 ReturnUri: {returntUri}
 Useful for:
 Change the return uri or handle or skip the signin.");
+            
             _remoteFailure = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(4, "RemoteFailure"),
                 logLevel: LogLevel.Information,
                 formatString: @"Scheme {scheme} - Event {event}
 Description:
 This event is raised before SignIn the current ticket and redirect to the original requested uri in the site.
-Information:
+Relevant information:
 failure: {failure}
 Useful for:
 Change the return uri or handle or skip the signin.");

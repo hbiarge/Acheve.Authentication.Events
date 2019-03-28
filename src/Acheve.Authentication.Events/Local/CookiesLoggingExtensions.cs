@@ -33,6 +33,7 @@ Relevant information:
 Principal: {principal}
 Useful for:
 Perform custom logic in the incoming ClaimsPrincipal or force the cookie renewal.");
+            
             _signingIn = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(201, "SigningIn"),
                 logLevel: LogLevel.Information,
@@ -45,6 +46,7 @@ Relevant information:
 Principal: {principal}
 Useful for:
 Customize the cookie options.");
+           
             _signedIn = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(202, "SignedIn"),
                 logLevel: LogLevel.Information,
@@ -57,6 +59,7 @@ Relevant information:
 Principal: {principal}
 Useful for:
 Track sigins?.");
+            
             _signingOut = LoggerMessage.Define<string, string>(
                 eventId: new EventId(202, "SigningOut"),
                 logLevel: LogLevel.Information,
@@ -74,7 +77,7 @@ Description:
 This event is called when the handler is handling a challenge with this scheme.
 You can validate and customize the redirect uri.
 This method is called once when there is a Challenge in this scheme.
-Information:
+Relevant information:
 RedirectUri: {redirectUri}");
             _redirectToReturnUrl = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(210, "RedirectToReturnUrl"),
@@ -83,7 +86,7 @@ RedirectUri: {redirectUri}");
 Description:
 This event is called before redirecting to the return url specified in a signin or signout process for this scheme if a returnUrl is present..
 You can validate and customize the redirect uri.
-Information:
+Relevant information:
 RedirectUri: {redirectUri}");
             _redirectToAccessDenied = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(210, "RedirectToAccessDenied"),
@@ -93,7 +96,7 @@ Description:
 This event is called when the handler is handling a forbidden with this scheme.
 You can validate and customize the redirect uri.
 This method is called once when there is a Forbidden in this scheme.
-Information:
+Relevant information:
 RedirectUri: {redirectUri}");
             _redirectToLogout = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(213, "RedirectToLogout"),
@@ -101,7 +104,7 @@ RedirectUri: {redirectUri}");
                 formatString: @"Scheme {scheme} - Event {event}
 Description:
 Aparently this event is not called anymore in the handler.
-Information:
+Relevant information:
 RedirectUri: {redirectUri}");
         }
 

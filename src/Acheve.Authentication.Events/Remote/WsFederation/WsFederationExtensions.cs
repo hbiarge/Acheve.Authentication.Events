@@ -25,11 +25,12 @@ namespace Acheve.Authentication.Events.Remote.WsFederation
                 formatString: @"Scheme {scheme} - Event {event}
 Description:
 This is a Remote Authentication Handler. You are going to be redirected to the OpenIdConnect server.
-Information:
+Relevant information:
 RedirectUri: {redirectUri}
 Useful for:
 You can add information to the context.ProtocolMessage object (for example acr values or domain hint).
 You can also bypass the handler and call context.HandleResponse() if you want to write the response by your own.");
+
             _messageReceived = LoggerMessage.Define<string, string>(
                eventId: new EventId(402, "MessageReceived"),
                logLevel: LogLevel.Information,
@@ -41,6 +42,7 @@ You can examine or add information to the context.ProtocolMessage object.
 You can also bypass the handler and call context.HandleResponse() if you want to manage the message by your own.
 Or skip further handler processing calling context.SkipHandler()
 Or generate an AuthenticationResult calling context.Sucess(), context.Fail() or context.NoResult()");
+
             _securityTokenReceived = LoggerMessage.Define<string, string>(
                eventId: new EventId(403, "SecurityTokenReceived"),
                logLevel: LogLevel.Information,
@@ -51,6 +53,7 @@ Useful for:
 You can also bypass the handler and call context.HandleResponse() if you want to redeem the code by your own.
 Or skip further handler processing calling context.SkipHandler()
 Or generate an AuthenticationResult calling context.Sucess(), context.Fail() or context.NoResult()");
+
             _securityTokenValidated = LoggerMessage.Define<string, string>(
                eventId: new EventId(404, "SecurityTokenValidated"),
                logLevel: LogLevel.Information,
@@ -61,16 +64,18 @@ Useful for:
 You can also bypass the handler and call context.HandleResponse() if you want to redeem the code by your own.
 Or skip further handler processing calling context.SkipHandler()
 Or generate an AuthenticationResult calling context.Sucess(), context.Fail() or context.NoResult()");
-                        _remoteSignOut = LoggerMessage.Define<string, string>(
-                          eventId: new EventId(405, "RemoteSignOut"),
-                          logLevel: LogLevel.Information,
-                          formatString: @"Scheme {scheme} - Event {event}
+            
+            _remoteSignOut = LoggerMessage.Define<string, string>(
+              eventId: new EventId(405, "RemoteSignOut"),
+              logLevel: LogLevel.Information,
+              formatString: @"Scheme {scheme} - Event {event}
 Description:
 The signout has been performed in the OpenIdConnect.Server and the callback has been called.
 Useful for:
 You can also bypass the handler and call context.HandleResponse() if you want to redeem the code by your own.
 Or skip further handler processing calling context.SkipHandler()
 Or generate an AuthenticationResult calling context.Sucess(), context.Fail() or context.NoResult()");
+            
             _authenticationFailed = LoggerMessage.Define<string, string>(
                           eventId: new EventId(406, "AuthenticationFailed"),
                           logLevel: LogLevel.Information,

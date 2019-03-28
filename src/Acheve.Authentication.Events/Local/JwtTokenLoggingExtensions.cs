@@ -28,6 +28,7 @@ Error: {error}
 ErrorDescription: {errorDescription}
 Useful for:
 Customize the 401 response. Call context.HandleResponse() to signal the handler that you are sending the response in this event to stop further proccesing.");
+            
             _messageReceived = LoggerMessage.Define<string, string>(
                 eventId: new EventId(101, "MessageReceived"),
                 logLevel: LogLevel.Information,
@@ -40,6 +41,7 @@ If an AuthenticationResult is generated in the MessageReceivedContext it is hono
 Useful for:
 Get the token from a different location or adjust or reject the token based on custom logic: get the token and set the context.Token property.
 Bypass the handler logic generating an AuthenticationResult: call context.Success(), context.Fail() or context.NoResult() based on your custom logic.");
+            
             _tokenValidated = LoggerMessage.Define<string, string, string, string>(
                 eventId: new EventId(101, "TokenValidated"),
                 logLevel: LogLevel.Information,
@@ -48,12 +50,13 @@ Description:
 The token has been validated by, at least, one security token validator and a ClaimsPrincipal has been created.
 You can also bypass all the handler processing and write custom logig to authenticate the request.
 If an AuthenticationResult is generated in the TokenValidatedContext it is honored by the handler.
-Information:
+Relevant information:
 User: {user}
 Token: {token}
 Useful for:
 Add custom claims to the generated ClaimsPrincipal or replace it: use context.Principal.
 Bypass the handler logic generating an AuthenticationResult: call context.Success(), context.Fail() or context.NoResult() based on your custom logic.");
+            
             _authenticationFailed = LoggerMessage.Define<string, string, string>(
                 eventId: new EventId(101, "AuthenticationFailed"),
                 logLevel: LogLevel.Information,
@@ -62,7 +65,7 @@ Description:
 Any security token validator has validated the token but at least one of them has generated a validation failure exception.
 In this event you can inspect the validation failure exceptions and decide if the request should be authenticated or not.
 If an AuthenticationResult is generated in the AuthenticationFailedContext it is honored by the handler.
-Information:
+Relevant information:
 Exception: {exception}
 Useful for:
 Add custom logic to handle an authentication failure. For example, manage the renew of public keys of the authority identity provider (can be done automatically through the RefreshOnIssuerKeyNotFound property).");
