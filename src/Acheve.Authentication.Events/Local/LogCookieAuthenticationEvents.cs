@@ -1,9 +1,10 @@
 ﻿using Acheve.Authentication.Events.Local;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.Cookies
+namespace Microsoft.AspNetCore.Authentication
 {
     public class EventsTypeCookieAuthenticationPostConfigureOptions : IPostConfigureOptions<CookieAuthenticationOptions>
     {

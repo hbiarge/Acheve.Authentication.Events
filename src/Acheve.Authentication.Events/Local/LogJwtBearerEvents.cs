@@ -1,10 +1,11 @@
 ﻿using Acheve.Authentication.Events.Local;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.JwtBearer
+namespace Microsoft.AspNetCore.Authentication
 {
     public class EventsTypeJwtBearerPostConfigureOptions : IPostConfigureOptions<JwtBearerOptions>
     {

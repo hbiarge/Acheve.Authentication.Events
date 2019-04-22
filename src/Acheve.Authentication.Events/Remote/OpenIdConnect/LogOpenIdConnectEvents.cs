@@ -1,10 +1,11 @@
 ﻿using Acheve.Authentication.Events.Remote;
 using Acheve.Authentication.Events.Remote.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.OpenIdConnect
+namespace Microsoft.AspNetCore.Authentication
 {
     public class EventsTypeOpenIdConnectPostConfigureOptions : IPostConfigureOptions<OpenIdConnectOptions>
     {

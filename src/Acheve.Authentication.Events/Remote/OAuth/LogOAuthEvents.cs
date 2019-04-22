@@ -1,10 +1,11 @@
 ﻿using Acheve.Authentication.Events.Remote;
 using Acheve.Authentication.Events.Remote.OAuth;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.OAuth
+namespace Microsoft.AspNetCore.Authentication
 {
     public class EventsTypeOAuthPostConfigureOptions : IPostConfigureOptions<OAuthOptions>
     {

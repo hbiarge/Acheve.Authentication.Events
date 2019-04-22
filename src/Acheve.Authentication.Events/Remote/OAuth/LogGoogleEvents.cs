@@ -1,11 +1,12 @@
 ﻿using Acheve.Authentication.Events.Remote;
 using Acheve.Authentication.Events.Remote.OAuth;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.Google
+namespace Microsoft.AspNetCore.Authentication
 {
     public class EventsTypeGooglePostConfigureOptions : IPostConfigureOptions<GoogleOptions>
     {

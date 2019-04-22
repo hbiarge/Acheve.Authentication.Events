@@ -1,10 +1,11 @@
 ﻿using Acheve.Authentication.Events.Remote;
 using Acheve.Authentication.Events.Remote.WsFederation;
+using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Microsoft.AspNetCore.Authentication.WsFederation
+namespace Microsoft.AspNetCore.Authentication
 {
     public class EventsTypeWsFederationPostConfigureOptions : IPostConfigureOptions<WsFederationOptions>
     {
