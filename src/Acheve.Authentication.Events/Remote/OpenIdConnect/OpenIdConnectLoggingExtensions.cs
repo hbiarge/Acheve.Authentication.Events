@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace Acheve.Authentication.Events.Remote.OpenIdConnect
 {
@@ -217,7 +218,7 @@ Or generate an AuthenticationResult calling context.Sucess(), context.Fail() or 
                 null);
         }
 
-        public static void UserInformationReceived(this ILogger logger, string scheme, OpenIdConnectMessage protocolMessage, ClaimsPrincipal principal, JObject user)
+        public static void UserInformationReceived(this ILogger logger, string scheme, OpenIdConnectMessage protocolMessage, ClaimsPrincipal principal, JsonDocument user)
         {
             _userInformationReceived(
                 logger,
