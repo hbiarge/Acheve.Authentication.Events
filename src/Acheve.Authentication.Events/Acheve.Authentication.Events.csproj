@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
 
-    <PackageLicenseUrl>https://github.com/hbiarge/Acheve.Authentication.Events/blob/master/LICENSE</PackageLicenseUrl>
+    <License>https://github.com/hbiarge/Acheve.Authentication.Events/blob/master/LICENSE</License>
     <PackageProjectUrl>https://github.com/hbiarge/Acheve.Authentication.Events</PackageProjectUrl>
     <Description>
       Achve.Authentication.Events is a nuget package that implements authentication events with detailed log information and description about the event.
@@ -11,7 +11,7 @@
       For more information see https://github.com/hbiarge/Acheve.Authentication.Events
     </Description>
     <PackageTags>Authentication</PackageTags>
-    <Version>1.2.0</Version>
+    <Version>2.0.0</Version>
     <RepositoryUrl>https://github.com/hbiarge/Acheve.Authentication.Events</RepositoryUrl>
     <Authors>Hugo Biarge</Authors>
   </PropertyGroup>
