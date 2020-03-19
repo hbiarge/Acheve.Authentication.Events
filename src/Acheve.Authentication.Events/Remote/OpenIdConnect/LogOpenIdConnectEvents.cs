@@ -12,7 +12,14 @@ namespace Microsoft.AspNetCore.Authentication
     {
         public void PostConfigure(string name, OpenIdConnectOptions options)
         {
-            options.EventsType = typeof(LogOpenIdConnectEvents);
+            if (options.EventsType is null)
+            {
+                options.EventsType = typeof(LogOpenIdConnectEvents);
+            }
+            else
+            {
+                options.EventsType = typeof(LogOpenIdConnectEvents<>).MakeGenericType(options.EventsType);
+            }
         }
     }
 
@@ -156,7 +163,7 @@ namespace Microsoft.AspNetCore.Authentication
 
             await base.AuthenticationFailed(context);
         }
-        
+
         public override async Task RemoteFailure(RemoteFailureContext context)
         {
             _logger.RemoteFailure(
@@ -168,12 +175,95 @@ namespace Microsoft.AspNetCore.Authentication
             await base.RemoteFailure(context);
         }
 
-        private async Task SafeCallOriginalEvent(OpenIdConnectEvents events, Func<OpenIdConnectEvents, Task> action)
+        private static async Task SafeCallOriginalEvent(OpenIdConnectEvents events, Func<OpenIdConnectEvents, Task> action)
         {
             if (events != null)
             {
                 await action(events);
             }
+        }
+    }
+
+    public class LogOpenIdConnectEvents<TOther> : LogOpenIdConnectEvents where TOther : OpenIdConnectEvents
+    {
+        private readonly TOther _originalEvents;
+
+        public LogOpenIdConnectEvents(IOptionsMonitor<OpenIdConnectOptions> options, TOther originalEvents, ILogger<LogOpenIdConnectEvents> logger)
+            : base(options, logger)
+        {
+            _originalEvents = originalEvents;
+        }
+
+        public override async Task RedirectToIdentityProvider(RedirectContext context)
+        {
+            await base.RedirectToIdentityProvider(context);
+            await _originalEvents.RedirectToIdentityProvider(context);
+        }
+
+        public override async Task MessageReceived(MessageReceivedContext context)
+        {
+            await base.MessageReceived(context);
+            await _originalEvents.MessageReceived(context);
+        }
+
+        public override async Task TokenValidated(TokenValidatedContext context)
+        {
+            await base.TokenValidated(context);
+            await _originalEvents.TokenValidated(context);
+        }
+
+        public override async Task AuthorizationCodeReceived(AuthorizationCodeReceivedContext context)
+        {
+            await base.AuthorizationCodeReceived(context);
+            await _originalEvents.AuthorizationCodeReceived(context);
+        }
+
+        public override async Task TokenResponseReceived(TokenResponseReceivedContext context)
+        {
+            await base.TokenResponseReceived(context);
+            await _originalEvents.TokenResponseReceived(context);
+        }
+
+        public override async Task TicketReceived(TicketReceivedContext context)
+        {
+            await base.TicketReceived(context);
+            await _originalEvents.TicketReceived(context);
+        }
+
+        public override async Task UserInformationReceived(UserInformationReceivedContext context)
+        {
+            await base.UserInformationReceived(context);
+            await _originalEvents.UserInformationReceived(context);
+        }
+
+        public override async Task RedirectToIdentityProviderForSignOut(RedirectContext context)
+        {
+            await base.RedirectToIdentityProviderForSignOut(context);
+            await _originalEvents.RedirectToIdentityProviderForSignOut(context);
+        }
+
+        public override async Task SignedOutCallbackRedirect(RemoteSignOutContext context)
+        {
+            await base.SignedOutCallbackRedirect(context);
+            await _originalEvents.SignedOutCallbackRedirect(context);
+        }
+
+        public override async Task RemoteSignOut(RemoteSignOutContext context)
+        {
+            await base.RemoteSignOut(context);
+            await _originalEvents.RemoteSignOut(context);
+        }
+
+        public override async Task AuthenticationFailed(AuthenticationFailedContext context)
+        {
+            await base.AuthenticationFailed(context);
+            await _originalEvents.AuthenticationFailed(context);
+        }
+
+        public override async Task RemoteFailure(RemoteFailureContext context)
+        {
+            await base.RemoteFailure(context);
+            await _originalEvents.RemoteFailure(context);
         }
     }
 }

@@ -25,6 +25,8 @@ namespace Sample
         {
             services.AddControllersWithViews();
 
+            services.AddTransient<MyCustomEvents>();
+
             services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -35,7 +37,7 @@ namespace Sample
                 .UseLogEvents()
                 .AddCookie(options =>
                 {
-                    options.Events.OnValidatePrincipal = context => Task.CompletedTask;
+                    options.EventsType = typeof(MyCustomEvents);
                 })
                 .AddOpenIdConnect(options =>
                 {
@@ -84,6 +86,14 @@ namespace Sample
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+    }
+
+    public class MyCustomEvents : CookieAuthenticationEvents
+    {
+        public override Task ValidatePrincipal(CookieValidatePrincipalContext context)
+        {
+            return base.ValidatePrincipal(context);
         }
     }
 }

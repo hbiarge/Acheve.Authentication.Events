@@ -11,7 +11,14 @@ namespace Microsoft.AspNetCore.Authentication
     {
         public void PostConfigure(string name, JwtBearerOptions options)
         {
-            options.EventsType = typeof(LogJwtBearerEvents);
+            if (options.EventsType is null)
+            {
+                options.EventsType = typeof(LogJwtBearerEvents);
+            }
+            else
+            {
+                options.EventsType = typeof(LogJwtBearerEvents<>).MakeGenericType(options.EventsType);
+            }
         }
     }
 
@@ -72,12 +79,47 @@ namespace Microsoft.AspNetCore.Authentication
             await base.AuthenticationFailed(context);
         }
 
-        private async Task SafeCallOriginalEvent(JwtBearerEvents events, Func<JwtBearerEvents, Task> action)
+        private static async Task SafeCallOriginalEvent(JwtBearerEvents events, Func<JwtBearerEvents, Task> action)
         {
             if (events != null)
             {
                 await action(events);
             }
+        }
+    }
+
+    public class LogJwtBearerEvents<TOther> : LogJwtBearerEvents where TOther : JwtBearerEvents
+    {
+        private readonly TOther _originalEvents;
+
+        public LogJwtBearerEvents(IOptionsMonitor<JwtBearerOptions> options, TOther originalEvents, ILogger<LogJwtBearerEvents> logger)
+        : base(options, logger)
+        {
+            _originalEvents = originalEvents;
+        }
+
+        public override async Task Challenge(JwtBearerChallengeContext context)
+        {
+            await base.Challenge(context);
+            await _originalEvents.Challenge(context);
+        }
+
+        public override async Task MessageReceived(MessageReceivedContext context)
+        {
+            await base.MessageReceived(context);
+            await _originalEvents.MessageReceived(context);
+        }
+
+        public override async Task TokenValidated(TokenValidatedContext context)
+        {
+            await base.TokenValidated(context);
+            await _originalEvents.TokenValidated(context);
+        }
+
+        public override async Task AuthenticationFailed(AuthenticationFailedContext context)
+        {
+            await base.AuthenticationFailed(context);
+            await _originalEvents.AuthenticationFailed(context);
         }
     }
 }

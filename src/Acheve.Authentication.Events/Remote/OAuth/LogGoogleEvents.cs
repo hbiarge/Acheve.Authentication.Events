@@ -13,7 +13,14 @@ namespace Microsoft.AspNetCore.Authentication
     {
         public void PostConfigure(string name, GoogleOptions options)
         {
-            options.EventsType = typeof(LogGoogleEvents);
+            if (options.EventsType is null)
+            {
+                options.EventsType = typeof(LogGoogleEvents);
+            }
+            else
+            {
+                options.EventsType = typeof(LogGoogleEvents<>).MakeGenericType(options.EventsType);
+            }
         }
     }
 
@@ -74,12 +81,47 @@ namespace Microsoft.AspNetCore.Authentication
             await base.RemoteFailure(context);
         }
 
-        private async Task SafeCallOriginalEvent(OAuthEvents events, Func<OAuthEvents, Task> action)
+        private static async Task SafeCallOriginalEvent(OAuthEvents events, Func<OAuthEvents, Task> action)
         {
             if (events != null)
             {
                 await action(events);
             }
+        }
+    }
+
+    public class LogGoogleEvents<TOther> : LogGoogleEvents where TOther : OAuthEvents
+    {
+        private readonly TOther _originalEvents;
+
+        public LogGoogleEvents(IOptionsMonitor<GoogleOptions> options, TOther originalEvents, ILogger<LogGoogleEvents> logger)
+            : base(options, logger)
+        {
+            _originalEvents = originalEvents;
+        }
+
+        public override async Task RedirectToAuthorizationEndpoint(RedirectContext<OAuthOptions> context)
+        {
+            await base.RedirectToAuthorizationEndpoint(context);
+            await _originalEvents.RedirectToAuthorizationEndpoint(context);
+        }
+
+        public override async Task CreatingTicket(OAuthCreatingTicketContext context)
+        {
+            await base.CreatingTicket(context);
+            await _originalEvents.CreatingTicket(context);
+        }
+
+        public override async Task TicketReceived(TicketReceivedContext context)
+        {
+            await base.TicketReceived(context);
+            await _originalEvents.TicketReceived(context);
+        }
+
+        public override async Task RemoteFailure(RemoteFailureContext context)
+        {
+            await base.RemoteFailure(context);
+            await _originalEvents.RemoteFailure(context);
         }
     }
 }
