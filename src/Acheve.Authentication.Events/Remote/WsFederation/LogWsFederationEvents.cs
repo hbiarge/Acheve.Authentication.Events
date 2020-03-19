@@ -1,4 +1,5 @@
-﻿using Acheve.Authentication.Events.Remote;
+﻿using System;
+using Acheve.Authentication.Events.Remote;
 using Acheve.Authentication.Events.Remote.WsFederation;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.Extensions.Logging;
@@ -17,86 +18,112 @@ namespace Microsoft.AspNetCore.Authentication
 
     public class LogWsFederationEvents : WsFederationEvents
     {
+        private readonly IOptionsMonitor<WsFederationOptions> _options;
         private readonly ILogger<LogWsFederationEvents> _logger;
 
-        public LogWsFederationEvents(ILogger<LogWsFederationEvents> logger)
+        public LogWsFederationEvents(IOptionsMonitor<WsFederationOptions> options, ILogger<LogWsFederationEvents> logger)
         {
+            _options = options;
             _logger = logger;
         }
 
-        public override Task RedirectToIdentityProvider(RedirectContext context)
+        public override async Task RedirectToIdentityProvider(RedirectContext context)
         {
             _logger.RedirectToIdentityProvider(
                 scheme: context.Scheme.Name,
                 protocolMessage: context.ProtocolMessage);
 
-            return base.RedirectToIdentityProvider(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RedirectToIdentityProvider(context));
+
+            await base.RedirectToIdentityProvider(context);
         }
 
-        public override Task MessageReceived(MessageReceivedContext context)
+        public override async Task MessageReceived(MessageReceivedContext context)
         {
             _logger.MessageReceived(
                 scheme: context.Scheme.Name,
                 protocolMessage: context.ProtocolMessage);
 
-            return base.MessageReceived(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.MessageReceived(context));
+
+            await base.MessageReceived(context);
         }
 
-        public override Task SecurityTokenReceived(SecurityTokenReceivedContext context)
+        public override async Task SecurityTokenReceived(SecurityTokenReceivedContext context)
         {
             _logger.SecurityTokenReceived(
                 scheme: context.Scheme.Name,
                 protocolMessage: context.ProtocolMessage,
                 principal: context.Principal);
 
-            return base.SecurityTokenReceived(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.SecurityTokenReceived(context));
+
+            await base.SecurityTokenReceived(context);
         }
 
-        public override Task SecurityTokenValidated(SecurityTokenValidatedContext context)
+        public override async Task SecurityTokenValidated(SecurityTokenValidatedContext context)
         {
             _logger.SecurityTokenValidated(
                 scheme: context.Scheme.Name,
                 protocolMessage: context.ProtocolMessage,
                 principal: context.Principal);
 
-            return base.SecurityTokenValidated(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.SecurityTokenValidated(context));
+
+            await base.SecurityTokenValidated(context);
         }
 
-        public override Task TicketReceived(TicketReceivedContext context)
+        public override async Task TicketReceived(TicketReceivedContext context)
         {
             _logger.TicketReceived(
                 scheme: context.Scheme.Name,
                 principal: context.Principal,
                 returntUri: context.ReturnUri);
 
-            return base.TicketReceived(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.TicketReceived(context));
+
+            await base.TicketReceived(context);
         }
 
-        public override Task RemoteSignOut(RemoteSignOutContext context)
+        public override async Task RemoteSignOut(RemoteSignOutContext context)
         {
             _logger.RemoteSignOut(
                 scheme: context.Scheme.Name,
                 protocolMessage: context.ProtocolMessage);
 
-            return base.RemoteSignOut(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RemoteSignOut(context));
+
+            await base.RemoteSignOut(context);
         }
 
-        public override Task RemoteFailure(RemoteFailureContext context)
+        public override async Task RemoteFailure(RemoteFailureContext context)
         {
             _logger.RemoteFailure(
                 scheme: context.Scheme.Name,
                 failure: context.Failure);
 
-            return base.RemoteFailure(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RemoteFailure(context));
+
+            await base.RemoteFailure(context);
         }
 
-        public override Task AuthenticationFailed(AuthenticationFailedContext context)
+        public override async Task AuthenticationFailed(AuthenticationFailedContext context)
         {
             _logger.AuthenticationFailed(
                 scheme: context.Scheme.Name,
                 exception: context.Exception);
 
-            return base.AuthenticationFailed(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.AuthenticationFailed(context));
+
+            await base.AuthenticationFailed(context);
+        }
+
+        private async Task SafeCallOriginalEvent(WsFederationEvents events, Func<WsFederationEvents, Task> action)
+        {
+            if (events != null)
+            {
+                await action(events);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Acheve.Authentication.Events.Remote;
+﻿using System;
+using Acheve.Authentication.Events.Remote;
 using Acheve.Authentication.Events.Remote.OAuth;
 using Microsoft.AspNetCore.Authentication.Twitter;
 using Microsoft.Extensions.Logging;
@@ -17,49 +18,67 @@ namespace Microsoft.AspNetCore.Authentication
 
     public class LogTwitterEvents : TwitterEvents
     {
+        private readonly IOptionsMonitor<TwitterOptions> _options;
         private readonly ILogger<LogTwitterEvents> _logger;
 
-        public LogTwitterEvents(ILogger<LogTwitterEvents> logger)
+        public LogTwitterEvents(IOptionsMonitor<TwitterOptions> options, ILogger<LogTwitterEvents> logger)
         {
+            _options = options;
             _logger = logger;
         }
 
-        public override Task RedirectToAuthorizationEndpoint(RedirectContext<TwitterOptions> context)
+        public override async Task RedirectToAuthorizationEndpoint(RedirectContext<TwitterOptions> context)
         {
             _logger.RedirectToAuthorizationEndpoint(
                 scheme: context.Scheme.Name,
                 redirectUri: context.RedirectUri);
 
-            return base.RedirectToAuthorizationEndpoint(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RedirectToAuthorizationEndpoint(context));
+
+            await base.RedirectToAuthorizationEndpoint(context);
         }
 
-        public override Task CreatingTicket(TwitterCreatingTicketContext context)
+        public override async Task CreatingTicket(TwitterCreatingTicketContext context)
         {
             _logger.CreatingTicket(
                 scheme: context.Scheme.Name,
                 accessToken: context.AccessToken,
                 principal: context.Principal);
 
-            return base.CreatingTicket(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.CreatingTicket(context));
+
+            await base.CreatingTicket(context);
         }
 
-        public override Task TicketReceived(TicketReceivedContext context)
+        public override async Task TicketReceived(TicketReceivedContext context)
         {
             _logger.TicketReceived(
                 scheme: context.Scheme.Name,
                 principal: context.Principal,
                 returntUri: context.ReturnUri);
 
-            return base.TicketReceived(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.TicketReceived(context));
+
+            await base.TicketReceived(context);
         }
 
-        public override Task RemoteFailure(RemoteFailureContext context)
+        public override async Task RemoteFailure(RemoteFailureContext context)
         {
             _logger.RemoteFailure(
                 scheme: context.Scheme.Name,
                 failure: context.Failure);
 
-            return base.RemoteFailure(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RemoteFailure(context));
+
+            await base.RemoteFailure(context);
+        }
+
+        private async Task SafeCallOriginalEvent(TwitterEvents events, Func<TwitterEvents, Task> action)
+        {
+            if (events != null)
+            {
+                await action(events);
+            }
         }
     }
 }

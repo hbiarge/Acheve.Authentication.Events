@@ -224,7 +224,7 @@ Or generate an AuthenticationResult calling context.Sucess(), context.Fail() or 
                 logger,
                 scheme,
                 nameof(UserInformationReceived),
-                user.ToString(),
+                user.RootElement.GetRawText(),
                 principal.ToFormattedLog(),
                 null);
         }

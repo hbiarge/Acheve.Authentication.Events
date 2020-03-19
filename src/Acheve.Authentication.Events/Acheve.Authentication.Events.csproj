@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <License>https://github.com/hbiarge/Acheve.Authentication.Events/blob/master/LICENSE</License>
     <PackageProjectUrl>https://github.com/hbiarge/Acheve.Authentication.Events</PackageProjectUrl>
@@ -11,7 +11,7 @@
       For more information see https://github.com/hbiarge/Acheve.Authentication.Events
     </Description>
     <PackageTags>Authentication</PackageTags>
-    <Version>2.0.1</Version>
+    <Version>3.1.2</Version>
     <RepositoryUrl>https://github.com/hbiarge/Acheve.Authentication.Events</RepositoryUrl>
     <Authors>Hugo Biarge</Authors>
   </PropertyGroup>
@@ -21,13 +21,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="3.1.2" />
   </ItemGroup>
 
 </Project>

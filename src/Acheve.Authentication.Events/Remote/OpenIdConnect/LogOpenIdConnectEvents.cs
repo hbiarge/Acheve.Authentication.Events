@@ -1,4 +1,5 @@
-﻿using Acheve.Authentication.Events.Remote;
+﻿using System;
+using Acheve.Authentication.Events.Remote;
 using Acheve.Authentication.Events.Remote.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Logging;
@@ -17,52 +18,62 @@ namespace Microsoft.AspNetCore.Authentication
 
     public class LogOpenIdConnectEvents : OpenIdConnectEvents
     {
+        private readonly IOptionsMonitor<OpenIdConnectOptions> _options;
         private readonly ILogger<LogOpenIdConnectEvents> _logger;
 
-        public LogOpenIdConnectEvents(ILogger<LogOpenIdConnectEvents> logger)
+        public LogOpenIdConnectEvents(IOptionsMonitor<OpenIdConnectOptions> options, ILogger<LogOpenIdConnectEvents> logger)
         {
+            _options = options;
             _logger = logger;
         }
 
-        public override Task RedirectToIdentityProvider(RedirectContext context)
+        public override async Task RedirectToIdentityProvider(RedirectContext context)
         {
             _logger.RedirectToIdentityProvider(
                 scheme: context.Scheme.Name,
                 protocolMessage: context.ProtocolMessage);
 
-            return base.RedirectToIdentityProvider(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RedirectToIdentityProvider(context));
+
+            await base.RedirectToIdentityProvider(context);
         }
 
-        public override Task MessageReceived(MessageReceivedContext context)
+        public override async Task MessageReceived(MessageReceivedContext context)
         {
             _logger.MessageReceived(
                 scheme: context.Scheme.Name,
                 protocolMessage: context.ProtocolMessage);
 
-            return base.MessageReceived(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.MessageReceived(context));
+
+            await base.MessageReceived(context);
         }
 
-        public override Task TokenValidated(TokenValidatedContext context)
+        public override async Task TokenValidated(TokenValidatedContext context)
         {
             _logger.TokenValidated(
                 scheme: context.Scheme.Name,
                 protocolMessage: context.ProtocolMessage,
                 principal: context.Principal);
 
-            return base.TokenValidated(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.TokenValidated(context));
+
+            await base.TokenValidated(context);
         }
 
-        public override Task AuthorizationCodeReceived(AuthorizationCodeReceivedContext context)
+        public override async Task AuthorizationCodeReceived(AuthorizationCodeReceivedContext context)
         {
             _logger.AuthorizationCodeReceived(
                 scheme: context.Scheme.Name,
                 protocolMessage: context.ProtocolMessage,
                 principal: context.Principal);
 
-            return base.AuthorizationCodeReceived(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.AuthorizationCodeReceived(context));
+
+            await base.AuthorizationCodeReceived(context);
         }
 
-        public override Task TokenResponseReceived(TokenResponseReceivedContext context)
+        public override async Task TokenResponseReceived(TokenResponseReceivedContext context)
         {
             _logger.TokenResponseReceived(
                 scheme: context.Scheme.Name,
@@ -70,20 +81,24 @@ namespace Microsoft.AspNetCore.Authentication
                 tokenEndpointResponse: context.TokenEndpointResponse,
                 principal: context.Principal);
 
-            return base.TokenResponseReceived(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.TokenResponseReceived(context));
+
+            await base.TokenResponseReceived(context);
         }
 
-        public override Task TicketReceived(TicketReceivedContext context)
+        public override async Task TicketReceived(TicketReceivedContext context)
         {
             _logger.TicketReceived(
                 scheme: context.Scheme.Name,
                 principal: context.Principal,
                 returntUri: context.ReturnUri);
 
-            return base.TicketReceived(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.TicketReceived(context));
+
+            await base.TicketReceived(context);
         }
 
-        public override Task UserInformationReceived(UserInformationReceivedContext context)
+        public override async Task UserInformationReceived(UserInformationReceivedContext context)
         {
             _logger.UserInformationReceived(
                 scheme: context.Scheme.Name,
@@ -91,10 +106,12 @@ namespace Microsoft.AspNetCore.Authentication
                 principal: context.Principal,
                 user: context.User);
 
-            return base.UserInformationReceived(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.UserInformationReceived(context));
+
+            await base.UserInformationReceived(context);
         }
 
-        public override Task RedirectToIdentityProviderForSignOut(RedirectContext context)
+        public override async Task RedirectToIdentityProviderForSignOut(RedirectContext context)
         {
             _logger.RedirectToIdentityProviderForSignOut(
                 scheme: context.Scheme.Name,
@@ -102,43 +119,61 @@ namespace Microsoft.AspNetCore.Authentication
                 options: context.Options,
                 properties: context.Properties);
 
-            return base.RedirectToIdentityProviderForSignOut(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RedirectToIdentityProviderForSignOut(context));
+
+            await base.RedirectToIdentityProviderForSignOut(context);
         }
 
-        public override Task SignedOutCallbackRedirect(RemoteSignOutContext context)
+        public override async Task SignedOutCallbackRedirect(RemoteSignOutContext context)
         {
             _logger.SignedOutCallbackRedirect(
                 scheme: context.Scheme.Name,
                 properties: context.Properties);
 
-            return base.SignedOutCallbackRedirect(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.SignedOutCallbackRedirect(context));
+
+            await base.SignedOutCallbackRedirect(context);
         }
 
-        public override Task RemoteSignOut(RemoteSignOutContext context)
+        public override async Task RemoteSignOut(RemoteSignOutContext context)
         {
             _logger.RemoteSignOut(
                 scheme: context.Scheme.Name,
                 protocolMessage: context.ProtocolMessage);
 
-            return base.RemoteSignOut(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RemoteSignOut(context));
+
+            await base.RemoteSignOut(context);
         }
 
-        public override Task AuthenticationFailed(AuthenticationFailedContext context)
+        public override async Task AuthenticationFailed(AuthenticationFailedContext context)
         {
             _logger.AuthenticationFailed(
                 scheme: context.Scheme.Name,
                 exception: context.Exception);
 
-            return base.AuthenticationFailed(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.AuthenticationFailed(context));
+
+            await base.AuthenticationFailed(context);
         }
         
-        public override Task RemoteFailure(RemoteFailureContext context)
+        public override async Task RemoteFailure(RemoteFailureContext context)
         {
             _logger.RemoteFailure(
                 scheme: context.Scheme.Name,
                 failure: context.Failure);
 
-            return base.RemoteFailure(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RemoteFailure(context));
+
+            await base.RemoteFailure(context);
+        }
+
+        private async Task SafeCallOriginalEvent(OpenIdConnectEvents events, Func<OpenIdConnectEvents, Task> action)
+        {
+            if (events != null)
+            {
+                await action(events);
+            }
         }
     }
 }

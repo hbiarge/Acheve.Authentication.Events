@@ -1,4 +1,5 @@
-﻿using Acheve.Authentication.Events.Local;
+﻿using System;
+using Acheve.Authentication.Events.Local;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -16,82 +17,108 @@ namespace Microsoft.AspNetCore.Authentication
 
     public class LogCookieAuthenticationEvents : CookieAuthenticationEvents
     {
+        private readonly IOptionsMonitor<CookieAuthenticationOptions> _options;
         private readonly ILogger<LogCookieAuthenticationEvents> _logger;
 
-        public LogCookieAuthenticationEvents(ILogger<LogCookieAuthenticationEvents> logger)
+        public LogCookieAuthenticationEvents(IOptionsMonitor<CookieAuthenticationOptions> options, ILogger<LogCookieAuthenticationEvents> logger)
         {
+            _options = options;
             _logger = logger;
         }
 
-        public override Task ValidatePrincipal(CookieValidatePrincipalContext context)
+        public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
         {
             _logger.ValidatePrincipal(
                 scheme: context.Scheme.Name,
                 principal: context.Principal);
 
-            return base.ValidatePrincipal(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.ValidatePrincipal(context));
+
+            await base.ValidatePrincipal(context);
         }
 
-        public override Task SigningIn(CookieSigningInContext context)
+        public override async Task SigningIn(CookieSigningInContext context)
         {
             _logger.SigningIn(
                 scheme: context.Scheme.Name,
                 principal: context.Principal);
 
-            return base.SigningIn(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.SigningIn(context));
+
+            await base.SigningIn(context);
         }
 
-        public override Task SignedIn(CookieSignedInContext context)
+        public override async Task SignedIn(CookieSignedInContext context)
         {
             _logger.SignedIn(
                  scheme: context.Scheme.Name,
                  principal: context.Principal);
 
-            return base.SignedIn(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.SignedIn(context));
+
+            await base.SignedIn(context);
         }
 
-        public override Task SigningOut(CookieSigningOutContext context)
+        public override async Task SigningOut(CookieSigningOutContext context)
         {
             _logger.SigningOut(
                 scheme: context.Scheme.Name);
 
-            return base.SigningOut(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.SigningOut(context));
+
+            await base.SigningOut(context);
         }
 
-        public override Task RedirectToLogin(RedirectContext<CookieAuthenticationOptions> context)
+        public override async Task RedirectToLogin(RedirectContext<CookieAuthenticationOptions> context)
         {
             _logger.RedirectToLogin(
                 scheme: context.Scheme.Name,
                 redirectUri: context.RedirectUri);
 
-            return base.RedirectToLogin(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RedirectToLogin(context));
+
+            await base.RedirectToLogin(context);
         }
 
-        public override Task RedirectToReturnUrl(RedirectContext<CookieAuthenticationOptions> context)
+        public override async Task RedirectToReturnUrl(RedirectContext<CookieAuthenticationOptions> context)
         {
             _logger.RedirectToReturnUrl(
                 scheme: context.Scheme.Name,
                 redirectUri: context.RedirectUri);
 
-            return base.RedirectToReturnUrl(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RedirectToReturnUrl(context));
+
+            await base.RedirectToReturnUrl(context);
         }
 
-        public override Task RedirectToAccessDenied(RedirectContext<CookieAuthenticationOptions> context)
+        public override async Task RedirectToAccessDenied(RedirectContext<CookieAuthenticationOptions> context)
         {
             _logger.RedirectToAccessDenied(
                 scheme: context.Scheme.Name,
                 redirectUri: context.RedirectUri);
 
-            return base.RedirectToAccessDenied(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RedirectToAccessDenied(context));
+
+            await base.RedirectToAccessDenied(context);
         }
 
-        public override Task RedirectToLogout(RedirectContext<CookieAuthenticationOptions> context)
+        public override async Task RedirectToLogout(RedirectContext<CookieAuthenticationOptions> context)
         {
             _logger.RedirectToLogout(
                 scheme: context.Scheme.Name,
                 redirectUri: context.RedirectUri);
 
-            return base.RedirectToLogout(context);
+            await SafeCallOriginalEvent(_options.Get(context.Scheme.Name).Events, e => e.RedirectToLogout(context));
+
+            await base.RedirectToLogout(context);
+        }
+
+        private async Task SafeCallOriginalEvent(CookieAuthenticationEvents events, Func<CookieAuthenticationEvents, Task> action)
+        {
+            if (events != null)
+            {
+                await action(events);
+            }
         }
     }
 }
