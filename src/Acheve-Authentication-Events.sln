@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.28711.60
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Acheve.Authentication.Events", "Acheve.Authentication.Events\Acheve.Authentication.Events.csproj", "{EEA007BC-DED8-4E4B-A941-E4C6F883A84D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5B7DFFC0-3AAB-4AD7-9068-9B517161A86E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{2FBA62EC-732E-46A2-A4CE-F38DBBEDA472}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "..\samples\Sample\Sample.csproj", "{B645AD76-63EB-4057-BFB7-387F741EF2E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +21,17 @@ Global
 		{EEA007BC-DED8-4E4B-A941-E4C6F883A84D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEA007BC-DED8-4E4B-A941-E4C6F883A84D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEA007BC-DED8-4E4B-A941-E4C6F883A84D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B645AD76-63EB-4057-BFB7-387F741EF2E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B645AD76-63EB-4057-BFB7-387F741EF2E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B645AD76-63EB-4057-BFB7-387F741EF2E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B645AD76-63EB-4057-BFB7-387F741EF2E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EEA007BC-DED8-4E4B-A941-E4C6F883A84D} = {5B7DFFC0-3AAB-4AD7-9068-9B517161A86E}
+		{B645AD76-63EB-4057-BFB7-387F741EF2E6} = {2FBA62EC-732E-46A2-A4CE-F38DBBEDA472}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {717ECA87-91A8-46E3-B3F8-1A448CCA5F77}
