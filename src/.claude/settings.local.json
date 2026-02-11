@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s \"D:\\\\source\\\\personal\\\\Acheve.Authentication.Events\")",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet add package:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nPhase 1 & 2: Enable modern C# features and fix syntax error\n\n- Enable LangVersion=latest and Nullable=enable in both .csproj files\n- Update library version from 3.1.3 to 4.0.0\n- Add Newtonsoft.Json dependency\n- Fix invalid extension\\(ILogger logger\\) syntax in CookiesLoggingExtensions\n- Convert to standard static extension methods class\n- Make LoggerMessage.Define delegates internal for accessibility\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(dotnet pack:*)"
+    ]
+  }
+}
